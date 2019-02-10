@@ -1,0 +1,22 @@
+{
+  "name": "pwa-football-app",
+  "version": "1.0.0",
+  "description": "Building a football app with PWA",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server -c-1"
+  },
+  "keywords": [
+    "pwa",
+    "progressive",
+    "web",
+    "app",
+    "complete"
+  ],
+  "devDependencies": {
+    "http-server": "^0.10.0"
+  },
+  "dependencies": {
+    "web-push": "^3.3.3"
+  }
+}

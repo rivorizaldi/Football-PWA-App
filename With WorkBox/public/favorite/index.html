@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="description" content="Footbal Data Information PWA" />
+    <title>List Favorite Player</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="/src/css/materialize.min.css"
+      media="screen,projection"
+    />
+    <link rel="stylesheet" href="/src/css/style.css" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#9ccc65 " />
+  </head>
+  <body>
+    <!-- navbar start here -->
+    <nav>
+      <div
+        class="light-green lighten-1
+      nav-wrapper "
+      >
+        <a
+          href="/index.html#top-scorer"
+          data-target="nav-mobile"
+          class="waves-effect sidenav-trigger"
+          ><i class="material-icons">arrow_back</i></a
+        >
+        <a href="#" class="brand-logo center"
+          ><img src="/src/images/icons/ball-64x64.png" alt=""
+        /></a>
+        <ul id="nav-mobile" class="right sidenav light-green lighten-1"></ul>
+      </div>
+    </nav>
+    <!-- navbar ends here -->
+
+    <main id="body-content" class="container">
+      <div class="row" id="favorite-data"><!-- data group disini --></div>
+    </main>
+
+    <footer class="page-footer light-green lighten-1">
+      <div class="container ">
+        <div class="row">
+          <div class="col s12 m12 l12">
+            <h6 class="center-align">© 2019 Rivo Rizaldi</h6>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="/src/js/materialize.min.js"></script>
+    <script src="/src/js/idb.js"></script>
+    <script>
+      // REGISTER SERVICE WORKER
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function() {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then(function() {
+              console.log("Service worker is registered");
+            })
+            .then(function() {
+              var dbPromise = idb.open("favorite-player", 1, function(db) {
+                if (!db.objectStoreNames.contains("player"))
+                  db.createObjectStore("player", { keyPath: "dataPlayer" });
+              });
+
+              dbPromise
+                .then(function(db) {
+                  var tx = db.transaction("player", "readonly");
+                  var store = tx.objectStore("player");
+                  return store.getAll();
+                })
+                .then(function(data) {
+                  console.log(data);
+                  var dataHTML = `<h4 class="center">Favorite Player</h4>`;
+                  for (var i in data) {
+                    dataHTML += `
+                      <div class = "col s12 m6 l4">
+                        <div class="card">
+                          <div class ="card-image">  `;
+                    if (data[i].dataPlayer == "Dušan Tadić") {
+                      dataHTML += `<img height ="400px" src = "https://upload.wikimedia.org/wikipedia/commons/6/67/Du%C5%A1an_Tadi%C4%87_%28cropped%29.jpg">`;
+                    } else if (data[i].dataPlayer == "Robert Lewandowski") {
+                      dataHTML += `<img height ="400px" src = "https://upload.wikimedia.org/wikipedia/commons/c/c2/JAP-POL_%286%29_%28cropped%29_%28cropped%29.jpg">`;
+                    } else if (
+                      data[i].dataPlayer == "El Fardou Ben Nabouhane"
+                    ) {
+                      dataHTML += `<img height ="400px" src = "https://upload.wikimedia.org/wikipedia/commons/f/fb/El_Fardou_Ben_Nabouhane.jpg">`;
+                    } else if (data[i].dataPlayer == "Lionel Messi") {
+                      dataHTML += `<img height ="400px" src = "https://upload.wikimedia.org/wikipedia/commons/c/c1/Lionel_Messi_20180626.jpg">`;
+                    } else if (data[i].dataPlayer == "Besart Ibraimi") {
+                      dataHTML += `<img height ="400px" src = "https://upload.wikimedia.org/wikipedia/commons/6/6c/FC_Salzburg_gegen_KF_Shk%C3%ABndija_Tetovo_%28Besart_Ibraimi%29.jpg">`;
+                    } else if (data[i].dataPlayer == "Guillaume Hoarau") {
+                      dataHTML += `<img height ="400px" src = "https://upload.wikimedia.org/wikipedia/commons/b/b0/YB_vs._FCL_-_Hoarau_8.jpg">`;
+                    }
+                    dataHTML += `<span class="card-title yellow-text ">${
+                      data[i].dataPlayer
+                    }</span>
+                          </div>
+                        <div class = "card-content">
+                          <p>${data[i].dataTeam}</p>
+                          <p>Number Of Goals ${data[i].dataGoals}</p>
+                        </div>
+                        <div class="card-action">
+                          <button data-player-name="${
+                            data[i].dataPlayer
+                          }" class="deleteFavorite waves-effect waves-light btn-small red darken-3">Delete</button>
+                        </div>
+                      </div>
+                    </div>
+                    `;
+                  }
+                  document.getElementById("favorite-data").innerHTML = dataHTML;
+                })
+                .then(function() {
+                  let deleteFavorite = document.querySelectorAll(
+                    ".deleteFavorite"
+                  );
+
+                  deleteFavorite.forEach(function(del) {
+                    del.addEventListener("click", function() {
+                      let delDataPlayer = this.dataset.playerName;
+                      dbPromise
+                        .then(function(db) {
+                          var tx = db.transaction("player", "readwrite");
+                          var store = tx.objectStore("player");
+                          store.delete(delDataPlayer);
+                          return tx.complete;
+                        })
+                        .then(function() {
+                          location.reload();
+                        });
+                    });
+                  });
+                })
+                .catch(function() {
+                  document.getElementById("favorite-data").innerHTML =
+                    "<h1><center>There is no Data</center></h1>";
+                });
+            })
+            .catch(function() {
+              console.log("Service worker isn't registered");
+            });
+        });
+      } else {
+        console.log("ServiceWorker isn't supported.");
+      }
+    </script>
+  </body>
+</html>

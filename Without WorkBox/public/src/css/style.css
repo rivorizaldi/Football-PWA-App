@@ -1,0 +1,23 @@
+@media only screen and (min-width: 993px) {
+  nav a.sidenav-trigger {
+    display: block;
+  }
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+table {
+  margin-bottom: 32px;
+}
+
+.fdate {
+  color: #768398;
+}

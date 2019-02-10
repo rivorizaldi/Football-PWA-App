@@ -1,0 +1,20 @@
+{
+  "name": "Football PWA Apps",
+  "short_name": "FootbalPWA",
+  "icons": [
+    {
+      "src": "/src/images/icons/ball-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/index.html",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#9ccc65 ",
+  "theme_color": "#9ccc65 ",
+  "description": "Footbal Data Information implementation with PWA",
+  "dir": "ltr",
+  "gcm_sender_id": "1063613203832"
+}
