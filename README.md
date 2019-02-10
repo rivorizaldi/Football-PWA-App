@@ -1,2 +1,2 @@
 # Football-PWA-App
-A simple PWA Football Information
+A simple Football Information implemented with PWA Feature.
